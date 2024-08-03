@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/solethus/order-service/internal/client"
 	"net"
 
 	pb "github.com/solethus/shared-proto/proto/order"
@@ -23,9 +24,25 @@ func main() {
 	}
 	defer db.Close()
 
+	// Set up connection to Inventory Service
+	inventoryConn, err := grpc.Dial("inventory-service:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Logger.Fatalf("Failed to connect to Inventory Service: %v", err)
+	}
+	defer inventoryConn.Close()
+	inventoryClient := client.NewInventoryClient(inventoryConn)
+
+	// Set up connection to Dealership Service
+	dealershipConn, err := grpc.Dial("dealership-service:50052", grpc.WithInsecure())
+	if err != nil {
+		log.Logger.Fatalf("Failed to connect to Dealership Service: %v", err)
+	}
+	defer dealershipConn.Close()
+	dealershipClient := client.NewDealershipClient(dealershipConn)
+
 	// Create repository, service, and server
 	repo := repository.NewOrderRepository(db)
-	svc := service.NewOrderService(repo)
+	svc := service.NewOrderService(repo, inventoryClient, dealershipClient)
 	srv := server.NewOrderServer(svc)
 
 	// Create gRPC server
