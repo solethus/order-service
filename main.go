@@ -2,15 +2,15 @@ package main
 
 import (
 	"database/sql"
-	log "github.com/solethus/order-service/pkg/pkg/logger"
 	"net"
 
+	pb "github.com/solethus/shared-proto/proto/order"
 	"google.golang.org/grpc"
 
 	"github.com/solethus/order-service/internal/repository"
 	"github.com/solethus/order-service/internal/server"
 	"github.com/solethus/order-service/internal/service"
-	pb "github.com/solethus/order-service/proto/order"
+	log "github.com/solethus/order-service/pkg/pkg/logger"
 )
 
 func main() {

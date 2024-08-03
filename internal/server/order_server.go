@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/solethus/order-service/internal/service"
-	pb "github.com/solethus/order-service/proto/order"
+	pb "github.com/solethus/shared-proto/proto/order"
 )
 
 type OrderServer struct {
